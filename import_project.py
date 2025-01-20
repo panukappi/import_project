@@ -102,7 +102,7 @@ def main():
         
     else:
         print("Error! cannot create the database connection.")
-(print("Import successful!"))
+    print("Import completed")
 
 if __name__ == '__main__':
     main()
