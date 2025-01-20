@@ -31,8 +31,12 @@ def insert_from_ids(conn1, conn2, table, id_name, ids):
         insert_data(conn1, table, record)
         
 def get_ids(conn, select, table, id_name, ids):
-    fetch = conn.cursor().execute(f"SELECT {select} FROM {table} WHERE {id_name} IN (\"{', '.join(map(str, ids))}\")").fetchall()
-    return [row[0] for row in fetch]
+    temp = []
+    for id in ids:
+        query = f"SELECT {select} FROM {table} WHERE {id_name} = '{id}'"
+        temp += conn.cursor().execute(query).fetchall()
+    temp = set(temp)
+    return [row[0] for row in temp]
 
 def main():
     database1 = "data/database/pythagora.db"
@@ -69,7 +73,8 @@ def main():
                 insert_from_ids(conn1, conn2, "project_states", "branch_id", branch_ids)
                     
                 # Get the inserted project_states' ids
-                project_state_ids = get_ids(conn1, "id", "project_states", "branch_id", branch_ids)
+                project_state_fetch = conn1.cursor().execute(f"SELECT id FROM project_states WHERE branch_id IN (\"{', '.join(map(str, branch_ids))}\")").fetchall()
+                project_state_ids = [row[0] for row in project_state_fetch]
                 
                 insert_from_ids(conn1, conn2, "exec_logs", "project_state_id", project_state_ids)
                 insert_from_ids(conn1, conn2, "llm_requests", "project_state_id", project_state_ids)
@@ -77,22 +82,10 @@ def main():
                 insert_from_ids(conn1, conn2, "files", "project_state_id", project_state_ids)
                 
                 # Get the inserted files' content_ids
-                content_ids = get_ids(conn1, "content_id", "files", "project_state_id", project_state_ids)
-
-                content = []
-                for id in project_state_ids:
-                    query = f"SELECT content_id FROM files WHERE project_state_id = '{id}'"
-                    content += conn2.cursor().execute(query).fetchall()
-                content = set(content)
-                content_ids = [row[0] for row in content]
+                content_ids = get_ids(conn2, "content_id", "files", "project_state_id", project_state_ids)
                 insert_from_ids(conn1, conn2, "file_contents", "id", content_ids)
                 
-                specification = []
-                for id in project_state_ids:
-                    query = f"SELECT specification_id FROM project_states WHERE id = '{id}'"
-                    specification += conn2.cursor().execute(query).fetchall()
-                specification = set(specification)
-                specification_ids = [row[0] for row in specification]
+                specification_ids = get_ids(conn2, "specification_id", "project_states", "id", project_state_ids)
                 insert_from_ids(conn1, conn2, "specifications", "id", specification_ids)
                     
             else:
