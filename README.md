@@ -12,4 +12,4 @@ Run from the command line like so:
 
 
 
-The database to import from is located in the gpt-pilot directory containing the project at *\gpt-pilot\pythagora-core\data\database*
+The database to import from is located in the gpt-pilot directory containing the desired project at *\gpt-pilot\pythagora-core\data\database*
