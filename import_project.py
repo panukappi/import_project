@@ -87,6 +87,8 @@ def main():
                 
                 specification_ids = get_ids(conn2, "specification_id", "project_states", "id", project_state_ids)
                 insert_from_ids(conn1, conn2, "specifications", "id", specification_ids)
+                
+                print("Import completed")
                     
             else:
                 print(f"No project found with name {project_name}")
@@ -95,7 +97,6 @@ def main():
         
     else:
         print("Error! cannot create the database connection.")
-    print("Import completed")
 
 if __name__ == '__main__':
     main()
