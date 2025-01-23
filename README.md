@@ -1,15 +1,32 @@
 # import_project
-Tool to import Pythagora project to a different device
+Tool to import/export Pythagora project to a different device
 
 # how to use
+**Export project:**
 
-Put import_project.py in your *gpt-pilot\pythagora-core* directory
+Put import_project.py in *\gpt-pilot\pythagora-core*
+
+Run from the command line:
+
+```
+    python import_project.py export [name of project]
+```
+
+This will create [name_of_project].db in the *\gpt-pilot\pythagora-core* directory. Share this file with the person who wants to import the project.
 
 
-Run from the command line like so:
+**Import project:**
 
-    python import_project.py [database to import from] [name of imported project]
+Put [name_of_project].db in *\gpt-pilot\pythagora-core*
+
+Run from the command line:
+
+```
+    python import_project.py import [name of project]
+```
+
+This will import the project data to your own Pythagora. 
 
 
 
-The database to import from is located in the gpt-pilot directory containing the desired project at *\gpt-pilot\pythagora-core\data\database*
+Note that this program only imports data from the pythagora.db file, you will also need to have the project files in your *\gpt-pilot\pythagora-core\workspace* directory.
