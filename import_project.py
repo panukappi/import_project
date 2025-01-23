@@ -1,5 +1,6 @@
 import sqlite3
 import sys
+import os
 
 
 def create_connection(db_file):
@@ -212,26 +213,29 @@ def main():
     if mode == "export":
         database2 = "data/database/pythagora.db"
     else:
-        database2 = f"{project_name}.db"
+        if os.path.exists(f"{project_name}.db"):
+            database2 = f"{project_name}.db"
+        else:
+            print(f"Error: {project_name}.db not found.")
+            sys.exit(1)
 
     database1 = "data/database/pythagora.db"
 
     if mode == "export":
         database1 = f"{project_name}.db"
 
-    conn1 = create_connection(database1)
     conn2 = create_connection(database2)
 
-    if mode == "export":
-        create_database(conn1)
-
-    if conn1 is not None and conn2 is not None:
+    if conn2 is not None:
         try:
             # Query the project from database2
             query_project = f"SELECT * FROM projects WHERE name = '{project_name}'"
             project_record = conn2.cursor().execute(query_project).fetchone()
 
             if project_record:
+                conn1 = create_connection(database1)
+                if mode == "export":
+                    create_database(conn1)
                 # Insert the project into database1
                 insert_data(conn1, "projects", project_record)
 
